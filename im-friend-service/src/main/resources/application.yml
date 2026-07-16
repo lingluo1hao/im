@@ -1,0 +1,38 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: im-friend-service
+  profiles:
+    active: dev
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+      - org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration
+  cloud:
+    nacos:
+      # 1. 注册中心配置
+      discovery:
+        server-addr: 192.168.200.128:8848
+        namespace: dev
+        username: nacos
+        password: nacos
+        # 💡 建议增加：心跳上报周期和健康检查（防止服务假死，网关感知不到）
+        heart-beat-interval: 5
+        heart-beat-timeout: 15
+
+      # 2. 配置中心配置
+      config:
+        server-addr: 192.168.200.128:8848
+        namespace: dev
+        username: nacos
+        password: nacos
+        file-extension: yaml
+        refresh-enabled: true
+
+  # 3. 2025最新标准：双配置导入
+  config:
+    import:
+      - optional:nacos:im-common.yaml?group=DEFAULT_GROUP        # 引入公共JWT配置
+      - optional:nacos:im-friend-service.yaml?group=DEFAULT_GROUP   # 引入用户服务独有配置（如MyBatis、Database连接）

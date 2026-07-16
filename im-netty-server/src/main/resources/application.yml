@@ -1,0 +1,35 @@
+server:
+  port: 8085  # Spring Boot HTTP端口，用于监控/健康检查
+
+spring:
+  application:
+    name: im-netty-server
+  profiles:
+    active: dev # 指定开发环境
+
+  cloud:
+    nacos:
+      # Nacos 服务器地址
+      discovery:
+        server-addr: 192.168.200.128:8848
+        namespace: dev # 💡 必须加上命名空间，否则找不到！
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 192.168.200.128:8848
+        namespace: dev # 💡 必须加上命名空间，否则找不到！
+        file-extension: yaml
+        username: nacos
+        password: nacos
+
+  # 🚀 2025最新标准：修改为导入你在 Nacos 创建的 im-common.yaml
+  config:
+    import:
+      - optional:nacos:im-common.yaml?group=DEFAULT_GROUP   # 引入公共JWT
+      - optional:nacos:im-netty-server.yaml?group=DEFAULT_GROUP  # 引入网关路由
+management:
+  health:
+    db:
+      enabled: false
+    defaults:
+      enabled: true # 其他基础健康检查（如磁盘、内存）保持开启

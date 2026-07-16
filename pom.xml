@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.im</groupId>
+    <artifactId>im</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mybatis-plus.version>3.5.10.1</mybatis-plus.version>
+    </properties>
+
+    <!-- 统一管理SpringBoot 3.5.15版本 -->
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.6.0</version> <!-- 强制升级到 1.x 的安全最终版 -->
+            </dependency>
+
+            <!-- 🔒 安全防御：针对 CVE-2025-48924 漏洞，强行覆盖并升级全局的 commons-lang3 工具包 -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.18.0</version> <!-- 强制锁定到已修复 ClassUtils 递归漏洞的安全版本 -->
+            </dependency>
+
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.84</version> <!-- 强制升级到已全面修复 LDAP 注入的安全版本 -->
+            </dependency>
+            <!-- 同步锁定全家桶相关依赖，防止混用低版本引发 NoSuchMethodError -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk18on</artifactId>
+                <version>1.84</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcutil-jdk18on</artifactId>
+                <version>1.84</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>3.5.15</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 2. 升级Spring Cloud至适配Boot 3.5的2025.0.x系列 -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>2025.0.0</version> <!-- 适配SpringBoot 3.5的官方版本 -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 3. 引入对应的Spring Cloud Alibaba 全量版本管理 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2025.0.0.0</version> <!-- 适配Boot 3.5 / Cloud 2025的阿里版本 -->
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- 引入MyBatis-Plus Starter -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <!-- 显式锁定核心扩展包版本，避免依赖冲突 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-extension</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-core</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-jsqlparser</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 子模块列表，新建子模块后会自动生成在这里 -->
+    <modules>
+        <module>im-common</module>
+        <module>im-gateway</module>
+        <module>im-user-service</module>
+        <module>im-group-service</module>
+        <module>im-message-service</module>
+        <module>im-push-service</module>
+        <module>im-task-service</module>
+        <module>im-netty-server</module>
+    </modules>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>3.5.15</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

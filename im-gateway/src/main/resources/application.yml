@@ -1,0 +1,43 @@
+server:
+  port: 10000 # 网关端口
+
+spring:
+  application:
+    name: im-gateway
+  profiles:
+    active: dev # 指定开发环境
+
+  cloud:
+    nacos:
+      # Nacos 服务器地址
+      discovery:
+        server-addr: 192.168.200.128:8848
+        namespace: dev # 💡 必须加上命名空间，否则找不到！
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 192.168.200.128:8848
+        namespace: dev # 💡 必须加上命名空间，否则找不到！
+        file-extension: yaml
+        username: nacos
+        password: nacos
+
+  # 🚀 2025最新标准：修改为导入你在 Nacos 创建的 im-common.yaml
+  config:
+    import:
+      - optional:nacos:im-common.yaml?group=DEFAULT_GROUP   # 引入公共JWT
+      - optional:nacos:im-gateway.yaml?group=DEFAULT_GROUP  # 引入网关路由
+management:
+  health:
+    db:
+      enabled: false
+    defaults:
+      enabled: true # 其他基础健康检查（如磁盘、内存）保持开启
+logging:
+  level:
+    root: INFO
+    org.springframework.web.server: TRACE          # 监控 WebFilter 过滤器链
+    org.springframework.web.reactive: TRACE        # 监控 WebFlux 核心转发
+    org.springframework.cloud.gateway: TRACE       # 网关路由
+    reactor.netty.http.server: DEBUG               # Netty 服务器
+

@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package im.protocol;
+
+option java_package = "com.im.netty.protocol.protobuf";
+option java_outer_classname = "ImProtocol";
+
+// 消息指令枚举
+enum MsgType {
+  UNKNOWN = 0;
+  LOGIN_REQUEST = 1;       // 登录鉴权请求
+  LOGIN_RESPONSE = 2;      // 登录鉴权响应
+  HEARTBEAT_REQUEST = 3;   // 心跳请求
+  HEARTBEAT_RESPONSE = 4;  // 心跳响应
+  PRIVATE_MESSAGE = 5;     // 单聊消息
+  GROUP_MESSAGE = 6;       // 群聊消息
+  LOGOUT_REQUEST = 7;      // 登出请求
+}
+
+// 登录鉴权请求包
+message LoginRequest {
+  string token = 1;  // 用户登录凭证
+  string device_id = 2; // 设备标识
+}
+
+// 登录鉴权响应包
+message LoginResponse {
+  int32 code = 1;    // 状态码：0成功，非0失败
+  string msg = 2;    // 提示信息
+  int64 user_id = 3; // 成功返回用户ID
+}
+
+// 心跳请求
+message HeartbeatRequest {
+  int64 timestamp = 1;
+}
+
+// 心跳响应
+message HeartbeatResponse {
+  int64 timestamp = 1;
+}
+
+// 通用业务消息
+message BusinessMessage {
+  int64 from_user_id = 1;
+  int64 target_id = 2;
+  string content = 3;
+  int64 msg_id = 4;
+}
+
+// 顶层统一消息包
+message ImPacket {
+  MsgType msg_type = 1;      // 消息类型
+  oneof body {
+    LoginRequest login_request = 2;
+    LoginResponse login_response = 3;
+    HeartbeatRequest heartbeat_request = 4;
+    HeartbeatResponse heartbeat_response = 5;
+    BusinessMessage private_message = 6;
+    BusinessMessage group_message = 7;
+  }
+}

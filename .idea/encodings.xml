@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/im-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-common/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-friend-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-friend-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-gateway/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-group-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-group-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-message-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-message-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-netty-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-netty-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-push-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-push-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-task-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-task-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-user-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/im-user-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

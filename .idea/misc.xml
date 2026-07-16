@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/im-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/im-user-service/pom.xml" />
+        <option value="$PROJECT_DIR$/im-common/pom.xml" />
+        <option value="$PROJECT_DIR$/im-friend-service/pom.xml" />
+        <option value="$PROJECT_DIR$/im-group-service/pom.xml" />
+        <option value="$PROJECT_DIR$/im-netty-server/pom.xml" />
+        <option value="$PROJECT_DIR$/im-message-service/pom.xml" />
+        <option value="$PROJECT_DIR$/im-push-service/pom.xml" />
+        <option value="$PROJECT_DIR$/im-task-service/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_21" default="true" project-jdk-name="21" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>
