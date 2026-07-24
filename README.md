@@ -1,6 +1,16 @@
 # IM-Server 分布式即时通讯系统
 
-> 面向千万级在线用户的分布式IM平台，采用 Spring Cloud 微服务架构 + Netty 长连接通讯
+<div align="center">
+
+![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.15-brightgreen?logo=spring)
+![Netty](https://img.shields.io/badge/Netty-4.x-blue)
+![Protobuf](https://img.shields.io/badge/Protobuf-4.28.2-yellow?logo=protobuf)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+面向千万级在线用户的分布式IM平台
+
+</div>
 
 ![系统架构图](./doc/img/arch-overview.png)
 
