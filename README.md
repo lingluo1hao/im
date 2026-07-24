@@ -2,10 +2,11 @@
 
 <div align="center">
 
-![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.15-brightgreen?logo=spring)
-![Netty](https://img.shields.io/badge/Netty-4.x-blue)
-![Protobuf](https://img.shields.io/badge/Protobuf-4.28.2-yellow?logo=protobuf)
+![Java](https://img.shields.io/badge/Java-21-orange?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.15-brightgreen?logo=spring&logoColor=white)
+![Netty](https://img.shields.io/badge/Netty-4.x-blue?logo=data:image/svg&svg)
+![Protobuf](https://img.shields.io/badge/Protobuf-4.28.2-yellow)
+![MyBatis Plus](https://img.shields.io/badge/MyBatis--Plus-3.5.10.1-green)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 面向千万级在线用户的分布式IM平台
