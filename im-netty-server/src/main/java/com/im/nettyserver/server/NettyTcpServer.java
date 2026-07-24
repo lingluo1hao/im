@@ -7,11 +7,13 @@ import com.im.nettyserver.handler.HeartBeatHandler;
 import com.im.nettyserver.handler.ImMessageHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.ResourceLeakDetector;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,31 +35,39 @@ public class NettyTcpServer {
 
     @PostConstruct
     public void start() {
-        bossGroup = new NioEventLoopGroup(1);
-        workerGroup = new NioEventLoopGroup();
+        int workerThreads = nettyProperties.getWorkerThreads() > 0
+                ? nettyProperties.getWorkerThreads() : Runtime.getRuntime().availableProcessors() * 4;
+        bossGroup = new NioEventLoopGroup(nettyProperties.getBossThreads());
+        workerGroup = new NioEventLoopGroup(workerThreads);
+
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
 
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 4096)
+                    .option(ChannelOption.SO_REUSEADDR, true)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    .childOption(ChannelOption.ALLOCATOR, io.netty.buffer.PooledByteBufAllocator.DEFAULT)
+                    .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK,
+                            new io.netty.channel.WriteBufferWaterMark(32 * 1024, 512 * 1024))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ChannelPipeline pipeline = ch.pipeline();
-                            // 1. 空闲检测：读空闲超时触发断连
                             pipeline.addLast(new IdleStateHandler(
                                     nettyProperties.getReaderIdleTime(), 0, 0, TimeUnit.SECONDS));
-                            // 2. Protobuf 协议编解码器（替换原自定义JSON编解码器）
                             pipeline.addLast(new ImProtobufDecoder());
                             pipeline.addLast(new ImProtobufEncoder());
-                            // 3. 心跳与业务处理器
                             pipeline.addLast(heartBeatHandler);
                             pipeline.addLast(imMessageHandler);
                         }
                     });
 
             bootstrap.bind(nettyProperties.getPort()).sync();
-            log.info("Netty 长连接服务启动成功，端口: {}", nettyProperties.getPort());
+            log.info("Netty 长连接服务启动成功，端口: {}，worker线程数: {}", nettyProperties.getPort(), workerThreads);
         } catch (InterruptedException e) {
             log.error("Netty 服务启动失败", e);
             stop();

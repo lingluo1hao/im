@@ -4,76 +4,72 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelId;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ImSessionManager {
 
-    /**
-     * userId -> Channel 映射
-     */
-    private final ConcurrentHashMap<Long, Channel> userChannelMap = new ConcurrentHashMap<>();
-
-    /**
-     * channelId -> userId 映射
-     */
+    private final ConcurrentHashMap<Long, Map<Integer, Channel>> userChannelsMap = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<ChannelId, Long> channelUserMap = new ConcurrentHashMap<>();
-
-    /**
-     * 连接鉴权状态标记
-     */
     private final ConcurrentHashMap<ChannelId, Boolean> channelAuthMap = new ConcurrentHashMap<>();
 
-    /**
-     * 标记连接已鉴权，并绑定用户会话
-     */
     public void markAuthenticated(Channel channel, Long userId) {
         channelAuthMap.put(channel.id(), true);
         bind(userId, channel);
     }
 
-    /**
-     * 判断连接是否已完成鉴权
-     */
     public boolean isAuthenticated(Channel channel) {
         return Boolean.TRUE.equals(channelAuthMap.get(channel.id()));
     }
-    /**
-     * 绑定用户与会话
-     */
+
     public void bind(Long userId, Channel channel) {
-        userChannelMap.put(userId, channel);
+        int deviceType = detectDeviceType(channel);
+        userChannelsMap.computeIfAbsent(userId, k -> new ConcurrentHashMap<>())
+                .put(deviceType, channel);
         channelUserMap.put(channel.id(), userId);
     }
 
-    /**
-     * 解绑会话
-     */
     public void unbind(Channel channel) {
         Long userId = channelUserMap.remove(channel.id());
+        channelAuthMap.remove(channel.id());
         if (userId != null) {
-            userChannelMap.remove(userId);
+            Map<Integer, Channel> deviceMap = userChannelsMap.get(userId);
+            if (deviceMap != null) {
+                deviceMap.values().removeIf(ch -> ch.id().equals(channel.id()));
+                if (deviceMap.isEmpty()) {
+                    userChannelsMap.remove(userId);
+                }
+            }
         }
     }
 
-    /**
-     * 根据用户ID获取本地连接
-     */
-    public Channel getChannel(Long userId) {
-        return userChannelMap.get(userId);
+    public Set<Map.Entry<Integer, Channel>> getAllChannels(Long userId) {
+        Map<Integer, Channel> deviceMap = userChannelsMap.get(userId);
+        return deviceMap != null ? deviceMap.entrySet() : Collections.emptySet();
     }
 
-    /**
-     * 根据channel获取用户ID
-     */
+    public Channel getChannel(Long userId) {
+        Map<Integer, Channel> deviceMap = userChannelsMap.get(userId);
+        return deviceMap != null ? deviceMap.values().stream().findFirst().orElse(null) : null;
+    }
+
     public Long getUserId(Channel channel) {
         return channelUserMap.get(channel.id());
     }
 
-    /**
-     * 判断用户是否在本节点在线
-     */
     public boolean isOnline(Long userId) {
-        return userChannelMap.containsKey(userId);
+        return userChannelsMap.containsKey(userId);
+    }
+
+    public int getOnlineCount() {
+        return userChannelsMap.size();
+    }
+
+    private int detectDeviceType(Channel channel) {
+        return channel.attr(io.netty.util.AttributeKey.valueOf("deviceType"))
+                .get() != null ? (int) channel.attr(io.netty.util.AttributeKey.valueOf("deviceType")).get() : 0;
     }
 }

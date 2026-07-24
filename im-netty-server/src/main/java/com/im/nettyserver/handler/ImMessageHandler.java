@@ -178,6 +178,12 @@ public class ImMessageHandler extends ChannelInboundHandlerAdapter {
     }
 
     private String getCurrentNodeId() {
-        return "127.0.0.1:" + nettyProperties.getPort();
+        try {
+            String host = java.net.InetAddress.getLocalHost().getHostAddress();
+            return host + ":" + nettyProperties.getPort();
+        } catch (Exception e) {
+            log.error("获取本机IP失败", e);
+            return "unknown:" + nettyProperties.getPort();
+        }
     }
 }
